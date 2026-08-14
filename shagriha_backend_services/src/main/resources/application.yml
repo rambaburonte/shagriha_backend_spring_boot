@@ -20,7 +20,7 @@ server:
     context-path: /api/v1
 
 app:
-  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  frontend-url: ${FRONTEND_URL:https://sandbox.shagriha.com}
   jwt:
     issuer: ${JWT_ISSUER:shagriha-api}
     access-token-ttl: PT15M
