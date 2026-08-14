@@ -2,9 +2,9 @@ spring:
   application:
     name: shagriha-backend-services
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/shagriha}
-    username: ${DATABASE_USERNAME:shagriha}
-    password: ${DATABASE_PASSWORD:shagriha}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/shagriha_db}
+    username: ${DATABASE_USERNAME:shagriha_db}
+    password: ${DATABASE_PASSWORD:PfmxOi3kul}
   jpa:
     open-in-view: false
     hibernate:

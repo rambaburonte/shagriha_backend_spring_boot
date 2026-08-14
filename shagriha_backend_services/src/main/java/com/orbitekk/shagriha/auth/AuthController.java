@@ -1,8 +1,8 @@
 package com.orbitekk.shagriha.auth;
 
-import com.orbitekk.shagriha.user.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,10 +10,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-import java.util.UUID;
+import com.orbitekk.shagriha.user.AppUser;
+import com.orbitekk.shagriha.user.UserRepository;
+import com.orbitekk.shagriha.user.UserRole;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,7 +42,7 @@ public class AuthController {
         if (!request.password().equals(request.confirmPassword())) throw new IllegalArgumentException("Passwords do not match");
         if (users.existsByUsernameIgnoreCase(request.username())) throw new IllegalArgumentException("Username is already registered");
         if (users.existsByEmailIgnoreCase(request.email())) throw new IllegalArgumentException("Email is already registered");
-        AppUser user = users.save(new AppUser(UUID.randomUUID(), request.username().trim(), request.email().trim().toLowerCase(),
+        AppUser user = users.saveAndFlush(new AppUser(UUID.randomUUID(), request.username().trim(), request.email().trim().toLowerCase(),
                 passwords.encode(request.password()), request.role()));
         String table = user.getRole() == UserRole.TENANT ? "tenant_profiles" : "manager_profiles";
         jdbc.sql("INSERT INTO " + table + " (user_id, name) VALUES (:userId, :name)")
